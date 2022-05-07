@@ -1,0 +1,22 @@
+{
+    "name": "liujinyong\/fastadmin-bin",
+    "description": "a software development package based on fastadmin",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "liujinyong",
+            "email": "893296814@qq.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.2.5",
+        "symfony/console": "5.4.*",
+        "symfony/orm-pack": "^2.2",
+        "symfony/filesystem": "5.4.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Liujinyong\\FastadminBin\\": "src"
+        }
+    }
+}
