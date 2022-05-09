@@ -9,7 +9,6 @@
 
     namespace Liujinyong\FastadminBin\Commands;
 
-    use Doctrine\DBAL\Connection;
     use Illuminate\Container\Container;
     use Illuminate\Database\Capsule\Manager;
     use Illuminate\Events\Dispatcher;
