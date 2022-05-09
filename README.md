@@ -6,12 +6,14 @@
 ## Installing
 
 ```shell
-$ composer require liujinyong/fastadmin-bin -vvv
+$ composer global require liujinyong/fastadmin-bin 
 ```
 
 ## Usage
 
-TODO
+```shell
+$ fastadmin-bin forum:create    //创建论坛
+```
 
 ## Contributing
 
