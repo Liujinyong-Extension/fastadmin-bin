@@ -74,16 +74,16 @@
             //自动生成后台数据
             $question = new ConfirmationQuestion("do you want create fastadmin view and api of forum<fg=yellow>(y/n)</fg=yellow>)???", true, '/^(y|yes)/i');
             if ($this->getHelperHandle()->ask($input, $output, $question)) {
-                exec("php think curd -t forum -c forum/forum");
+                exec("php think crud -t forum -c forum/forum");
             }
-            $output->writeln("\"php think curd -t forum -c forum/forum\" Success ");
+            $output->writeln("\"php think crud -t forum -c forum/forum\" Success ");
             $question = new ConfirmationQuestion("do you want create fastadmin menu of forum  <fg=yellow>(y/n)</fg=yellow>)???", true, '/^(y|yes)/i');
             if ($this->getHelperHandle()->ask($input, $output, $question)) {
                 exec("php think menu -c forum/forum");
             }
             $output->writeln("\"php think menu -c forum/forum\" Success ");
 
-            return true;
+            return 0;
         }
 
         protected function askDatabaseInfo($input, $output)
