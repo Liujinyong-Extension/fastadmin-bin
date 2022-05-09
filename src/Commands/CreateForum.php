@@ -58,7 +58,9 @@
             $capsule->setEventDispatcher(new Dispatcher(new Container()));
             $capsule->setAsGlobal();
             $capsule->bootEloquent();
-            Manager::schema()->drop("forum");
+            if (Manager::schema()->hasTable("forum")) {
+                Manager::schema()->drop("forum");
+            }
             Manager::schema()->create("forum", function($table) {
                 $table->increments('id')->comment("主键ID");
                 $table->string('email')->unique()->comment("邮箱");
@@ -68,16 +70,18 @@
                 $table->timestamp('update_time')->nullable()->comment("更新时间");
                 $table->timestamp('delete_time')->nullable()->comment("删除时间");
             });
-            $output->writeln("<fg=green>table create success!!!</fg=yellow>)");
+            $output->writeln("table create success!!!");
             //自动生成后台数据
             $question = new ConfirmationQuestion("do you want create fastadmin view and api of forum<fg=yellow>(y/n)</fg=yellow>)???", true, '/^(y|yes)/i');
             if ($this->getHelperHandle()->ask($input, $output, $question)) {
                 exec("php think curd -t forum -c forum/forum");
             }
+            $output->writeln("\"php think curd -t forum -c forum/forum\" Success ");
             $question = new ConfirmationQuestion("do you want create fastadmin menu of forum  <fg=yellow>(y/n)</fg=yellow>)???", true, '/^(y|yes)/i');
             if ($this->getHelperHandle()->ask($input, $output, $question)) {
                 exec("php think menu -c forum/forum");
             }
+            $output->writeln("\"php think menu -c forum/forum\" Success ");
 
             return true;
         }
