@@ -13,6 +13,8 @@
     use Illuminate\Database\Capsule\Manager;
     use Illuminate\Events\Dispatcher;
     use Symfony\Component\Console\Command\Command;
+    use Symfony\Component\Console\Helper\ProgressBar;
+    use Symfony\Component\Console\Helper\Table;
     use Symfony\Component\Console\Input\InputArgument;
     use Symfony\Component\Console\Input\InputInterface;
     use Symfony\Component\Console\Output\OutputInterface;
@@ -89,70 +91,63 @@
         protected function askDatabaseInfo($input, $output)
         {
             $helper   = $this->getHelperHandle();
-            $question = new Question("host of your mysql(example: <fg=yellow>192.168.1.1</fg=yellow>):");
-            $question->setValidator(function($value) {
+            $output->writeln("<info>【fastadmin-bin】是一个自由度较高的控制台命令</info>,<comment>以下是此命令的流程步骤</comment>");
+            $table = new Table($output);
+            $table
+                ->setHeaders(array('步骤', '事项'))
+                ->setRows(array(
+                              array('[1.连接数据库]', '为创建forum表前需创建orm实例'),
+                              array('[2.是否自动生成后台api]', 'y/n'),
+                              array('[3.是否自动生成后台目录]', 'y/n'),
+                              array('[4.是否自动生成前台api]', 'y/n'),
+                          ));
+            $table->render();
+
+            $question = new Question("[1.连接数据库]，例如(<fg=green>mysql -h127.0.0.1 -uroot -p123456 -P3306</fg=green>):");
+            $question->setValidator(function($value)use ($output) {
                 if (trim($value) == '') {
-                    throw new \Exception('The database host can not be empty');
+                    throw new \Exception('数据库连接不能为空！');
                 }
-
-                return $value;
+                $databaseInfo = explode(" ",$value);
+                $host = substr(trim($databaseInfo[1]),2);
+                $user = substr(trim($databaseInfo[2]),2);
+                $password = substr(trim($databaseInfo[3]),2);
+                $port = substr(trim($databaseInfo[4]),2);
+                if ($host == "" || $user == "" || $password =="" || $port == ""){
+                    throw new \Exception('参数有误');
+                }
+                if ((int)trim($port) < 0 || (int)trim($port) > 65535) {
+                    throw new \Exception('数据库端口有误');
+                }
+                return [$host,$user,$password,$port];
             });
-            $question->setMaxAttempts(3);
-            $this->databaseInfo['host'] = $helper->ask($input, $output, $question);
 
-            $question = new Question("port of your mysql(example: <fg=yellow>3306</fg=yellow>):");
-            $question->setValidator(function($value) {
+            $database = $helper->ask($input, $output, $question);
+            $question->setMaxAttempts(3);
+            $this->databaseInfo['host'] = $database[0];
+            $this->databaseInfo['user'] = $database[1];
+            $this->databaseInfo['password'] = $database[2];
+            $this->databaseInfo['port'] = $database[3];
+            $question = new Question("[1.连接数据库]，例如(<fg=green>mysql -d`DatabaseName` -pre`TablePrefix`</fg=green>),例如(<fg=green>mysql -dceshi -prefa_</fg=green>):");
+            $question->setValidator(function($value)use ($output) {
                 if (trim($value) == '') {
-                    throw new \Exception('The database port can not be empty');
+                    throw new \Exception('选择数据库不能为空！');
                 }
-                if ((int)trim($value) < 0 || (int)trim($value) > 65535) {
-                    throw new \Exception('The database port is wrong');
+                $databaseInfo = explode(" ",$value);
+                $database = substr(trim($databaseInfo[1]),2);
+                $prefix = substr(trim($databaseInfo[2]),4);
+                if ($database == ""){
+                    throw new \Exception('数据库选择错误');
                 }
+                return [$database,$prefix];
 
-                return $value;
+
             });
+            $database = $helper->ask($input, $output, $question);
             $question->setMaxAttempts(3);
-            $this->databaseInfo['port'] = $helper->ask($input, $output, $question);
+            $this->databaseInfo['database'] = $database[0];
+            $this->databaseInfo['prefix'] = $database[1];
 
-            $question = new Question("database of your mysql(example: <fg=yellow>dbname</fg=yellow>):");
-            $question->setValidator(function($value) {
-                if (trim($value) == '') {
-                    throw new \Exception('The database can not be empty');
-                }
-
-                return $value;
-            });
-            $question->setMaxAttempts(3);
-            $this->databaseInfo['database'] = $helper->ask($input, $output, $question);
-
-
-            $question = new Question("prefix of your database(example: <fg=yellow>fa_</fg=yellow>):");
-            $question->setMaxAttempts(3);
-            $this->databaseInfo['prefix'] = $helper->ask($input, $output, $question);
-
-            $question = new Question("user of your mysql(example: <fg=yellow>root</fg=yellow>):");
-            $question->setValidator(function($value) {
-                if (trim($value) == '') {
-                    throw new \Exception('The database user can not be empty');
-                }
-
-                return $value;
-            });
-            $question->setMaxAttempts(3);
-            $this->databaseInfo['user'] = $helper->ask($input, $output, $question);
-
-            $question = new Question("password of your mysql(example: <fg=yellow>123456</fg=yellow>):");
-            $question->setHidden(true);
-            $question->setHiddenFallback(false);
-            $question->setValidator(function($value) {
-                if (trim($value) == '') {
-                    throw new \Exception('The database password can not be empty');
-                }
-
-                return $value;
-            });
-            $question->setMaxAttempts(3);
-            $this->databaseInfo['password'] = $helper->ask($input, $output, $question);
         }
 
         protected function getHelperHandle()
