@@ -10,6 +10,7 @@
     namespace Liujinyong\FastadminBin;
 
     use Liujinyong\FastadminBin\Commands\CreateForum;
+    use Liujinyong\FastadminBin\Commands\Test;
     use Symfony\Component\Console\Application as Base;
 
     class Application extends Base
@@ -24,5 +25,6 @@
         {
             parent::__construct();
             $this->add(new CreateForum());
+            $this->add(new Test());
         }
     }
