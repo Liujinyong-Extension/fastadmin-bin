@@ -4,7 +4,7 @@
      * @package Liujinyong\FastadminBin\Commands
      * User: Jack
      * Date: 2022/5/7
-     * Time: 17:33
+     * Time: 19:33
      */
 
     namespace Liujinyong\FastadminBin\Commands;
