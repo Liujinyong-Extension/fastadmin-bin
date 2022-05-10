@@ -72,81 +72,93 @@
                 $table->timestamp('update_time')->nullable()->comment("更新时间");
                 $table->timestamp('delete_time')->nullable()->comment("删除时间");
             });
-            $output->writeln("table create success!!!");
+            $output->writeln("<info>Table Create success!!!</info>");
             //自动生成后台数据
-            $question = new ConfirmationQuestion("do you want create fastadmin view and api of forum<fg=yellow>(y/n)</fg=yellow>)???", true, '/^(y|yes)/i');
-            if ($this->getHelperHandle()->ask($input, $output, $question)) {
+            $question = new ConfirmationQuestion("[3.是否自动生成后台api],<fg=yellow>(y/n)</fg=yellow>)???", true, '/^(y|yes)/i');
+            if ($isComplete = $this->getHelperHandle()->ask($input, $output, $question)) {
                 exec("php think crud -t forum -c forum/forum");
+                $output->writeln("<info>Admin-Api Create Success!!!</info>");
             }
-            $output->writeln("\"php think crud -t forum -c forum/forum\" Success ");
-            $question = new ConfirmationQuestion("do you want create fastadmin menu of forum  <fg=yellow>(y/n)</fg=yellow>)???", true, '/^(y|yes)/i');
+            if ($isComplete) {
+                $question = new ConfirmationQuestion("[4.是否自动生成后台目录],<fg=yellow>(y/n)</fg=yellow>)???", true, '/^(y|yes)/i');
+                if ($this->getHelperHandle()->ask($input, $output, $question)) {
+                    exec("php think menu -c forum/forum");
+                    $output->writeln("<info>Admin-Menu Create Success!!!</info>");
+                }
+            }
+
+            $question = new ConfirmationQuestion("[5.是否自动生成前台api], <fg=yellow>(y/n)</fg=yellow>)???", true, '/^(y|yes)/i');
             if ($this->getHelperHandle()->ask($input, $output, $question)) {
-                exec("php think menu -c forum/forum");
+                //todo 复制文件
+                $output->writeln("<info>API Create Success!!!</info>");
+
             }
-            $output->writeln("\"php think menu -c forum/forum\" Success ");
+
+
 
             return 0;
         }
 
         protected function askDatabaseInfo($input, $output)
         {
-            $helper   = $this->getHelperHandle();
+            $helper = $this->getHelperHandle();
             $output->writeln("<info>【fastadmin-bin】是一个自由度较高的控制台命令</info>,<comment>以下是此命令的流程步骤</comment>");
             $table = new Table($output);
-            $table
-                ->setHeaders(array('步骤', '事项'))
-                ->setRows(array(
-                              array('[1.连接数据库]', '为创建forum表前需创建orm实例'),
-                              array('[2.是否自动生成后台api]', 'y/n'),
-                              array('[3.是否自动生成后台目录]', 'y/n'),
-                              array('[4.是否自动生成前台api]', 'y/n'),
-                          ));
+            $table->setHeaders(array('步骤', '事项'))->setRows(array(
+                                                               array('[1.连接数据库]', '为创建forum表前需创建orm实例'),
+                                                               array('[2.选择数据库]', '选择数据库及设置表前缀'),
+                                                               array('[3.是否自动生成fastadmin后台api]', 'y/n'),
+                                                               array('[4.是否自动生成fastadmin后台目录]', 'y/n'),
+                                                               array('[5.是否自动生成fastadmin前台api]', 'y/n'),
+                                                           ));
             $table->render();
 
             $question = new Question("[1.连接数据库]，例如(<fg=green>mysql -h127.0.0.1 -uroot -p123456 -P3306</fg=green>):");
-            $question->setValidator(function($value)use ($output) {
+            $question->setValidator(function($value) use ($output) {
                 if (trim($value) == '') {
                     throw new \Exception('数据库连接不能为空！');
                 }
-                $databaseInfo = explode(" ",$value);
-                $host = substr(trim($databaseInfo[1]),2);
-                $user = substr(trim($databaseInfo[2]),2);
-                $password = substr(trim($databaseInfo[3]),2);
-                $port = substr(trim($databaseInfo[4]),2);
-                if ($host == "" || $user == "" || $password =="" || $port == ""){
+                $databaseInfo = explode(" ", $value);
+                $host         = substr(trim($databaseInfo[1]), 2);
+                $user         = substr(trim($databaseInfo[2]), 2);
+                $password     = substr(trim($databaseInfo[3]), 2);
+                $port         = substr(trim($databaseInfo[4]), 2);
+                if ($host == "" || $user == "" || $password == "" || $port == "") {
                     throw new \Exception('参数有误');
                 }
                 if ((int)trim($port) < 0 || (int)trim($port) > 65535) {
                     throw new \Exception('数据库端口有误');
                 }
-                return [$host,$user,$password,$port];
+
+                return [$host, $user, $password, $port];
             });
 
             $database = $helper->ask($input, $output, $question);
             $question->setMaxAttempts(3);
-            $this->databaseInfo['host'] = $database[0];
-            $this->databaseInfo['user'] = $database[1];
+            $this->databaseInfo['host']     = $database[0];
+            $this->databaseInfo['user']     = $database[1];
             $this->databaseInfo['password'] = $database[2];
-            $this->databaseInfo['port'] = $database[3];
-            $question = new Question("[1.连接数据库]，例如(<fg=green>mysql -d`DatabaseName` -pre`TablePrefix`</fg=green>),例如(<fg=green>mysql -dceshi -prefa_</fg=green>):");
-            $question->setValidator(function($value)use ($output) {
+            $this->databaseInfo['port']     = $database[3];
+            $question                       = new Question("[2.选择数据库]，例如(<fg=green>mysql -d`DatabaseName` -pre`TablePrefix`</fg=green>),例如(<fg=green>mysql -dceshi -prefa_</fg=green>):");
+            $question->setValidator(function($value) use ($output) {
                 if (trim($value) == '') {
                     throw new \Exception('选择数据库不能为空！');
                 }
-                $databaseInfo = explode(" ",$value);
-                $database = substr(trim($databaseInfo[1]),2);
-                $prefix = substr(trim($databaseInfo[2]),4);
-                if ($database == ""){
+                $databaseInfo = explode(" ", $value);
+                $database     = substr(trim($databaseInfo[1]), 2);
+                $prefix       = substr(trim($databaseInfo[2]), 4);
+                if ($database == "") {
                     throw new \Exception('数据库选择错误');
                 }
-                return [$database,$prefix];
+
+                return [$database, $prefix];
 
 
             });
             $database = $helper->ask($input, $output, $question);
             $question->setMaxAttempts(3);
             $this->databaseInfo['database'] = $database[0];
-            $this->databaseInfo['prefix'] = $database[1];
+            $this->databaseInfo['prefix']   = $database[1];
 
         }
 
