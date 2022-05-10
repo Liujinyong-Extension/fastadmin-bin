@@ -13,16 +13,27 @@
     use Illuminate\Database\Capsule\Manager;
     use Illuminate\Events\Dispatcher;
     use Symfony\Component\Console\Command\Command;
-    use Symfony\Component\Console\Helper\ProgressBar;
     use Symfony\Component\Console\Helper\Table;
     use Symfony\Component\Console\Input\InputArgument;
     use Symfony\Component\Console\Input\InputInterface;
     use Symfony\Component\Console\Output\OutputInterface;
     use Symfony\Component\Console\Question\ConfirmationQuestion;
     use Symfony\Component\Console\Question\Question;
+    use Symfony\Component\Filesystem\Filesystem;
 
     class CreateForum extends Command
     {
+        /**
+         * @var string
+         */
+        protected $subDir;
+        /**
+         * @var string
+         */
+        protected $packDir;
+        /**
+         * @var string[]
+         */
         protected $databaseInfo = [
             'host'     => '',
             'port'     => '',
@@ -36,7 +47,8 @@
 
         protected function configure()
         {
-            $this->setName('forum:create')->setDescription('create forum')
+            $this->setName('forum:create')
+                 ->setDescription('create forum')
                  ->addArgument('directory', InputArgument::OPTIONAL, 'Directory name for composer-driven project');
         }
 
@@ -90,10 +102,12 @@
             $question = new ConfirmationQuestion("[5.是否自动生成前台api], <fg=yellow>(y/n)</fg=yellow>)???", true, '/^(y|yes)/i');
             if ($this->getHelperHandle()->ask($input, $output, $question)) {
                 //todo 复制文件
+                $fs = new Filesystem();
+                $this->subDir = __DIR__.'/../stubs/';
+                $this->packDir = './application/api/controller/';
+                $fs->dumpFile($this->packDir."Forum.php",file_get_contents($this->subDir."Forum"));
                 $output->writeln("<info>API Create Success!!!</info>");
-
             }
-
 
 
             return 0;

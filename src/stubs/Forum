@@ -1,0 +1,20 @@
+<?php
+    /**
+     * Created by PhpStorm
+     * @package app\api\controller
+     * User: brama
+     * Date: 2022/5/9
+     * Time: 19:52
+     */
+
+    namespace app\api\controller;
+
+    use app\common\controller\Api;
+
+    class Forum extends Api
+    {
+        public function index()
+        {
+
+        }
+    }
