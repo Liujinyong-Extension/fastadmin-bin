@@ -88,13 +88,13 @@
             //自动生成后台数据
             $question = new ConfirmationQuestion("[3.是否自动生成后台api],<fg=yellow>(y/n)</fg=yellow>)???", true, '/^(y|yes)/i');
             if ($isComplete = $this->getHelperHandle()->ask($input, $output, $question)) {
-                exec("php think crud -t forum -c forum/forum");
+                exec("php think crud -t forum -c forum/forum --force=true");
                 $output->writeln("<info>Admin-Api Create Success!!!</info>");
             }
             if ($isComplete) {
                 $question = new ConfirmationQuestion("[4.是否自动生成后台目录],<fg=yellow>(y/n)</fg=yellow>)???", true, '/^(y|yes)/i');
                 if ($this->getHelperHandle()->ask($input, $output, $question)) {
-                    exec("php think menu -c forum/forum");
+                    exec("php think menu -c forum/forum --force=true");
                     $output->writeln("<info>Admin-Menu Create Success!!!</info>");
                 }
             }
