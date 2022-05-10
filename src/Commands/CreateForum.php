@@ -86,20 +86,20 @@
             });
             $output->writeln("<info>Table Create success!!!</info>");
             //自动生成后台数据
-            $question = new ConfirmationQuestion("[3.是否自动生成后台api],<fg=yellow>(y/n)</fg=yellow>)???", true, '/^(y|yes)/i');
+            $question = new ConfirmationQuestion("[3.create admin-api],<fg=yellow>(y/n)</fg=yellow>)???", true, '/^(y|yes)/i');
             if ($isComplete = $this->getHelperHandle()->ask($input, $output, $question)) {
                 exec("php think crud -t forum -c forum/forum --force=true");
                 $output->writeln("<info>Admin-Api Create Success!!!</info>");
             }
             if ($isComplete) {
-                $question = new ConfirmationQuestion("[4.是否自动生成后台目录],<fg=yellow>(y/n)</fg=yellow>)???", true, '/^(y|yes)/i');
+                $question = new ConfirmationQuestion("[4.create admin-menu],<fg=yellow>(y/n)</fg=yellow>)???", true, '/^(y|yes)/i');
                 if ($this->getHelperHandle()->ask($input, $output, $question)) {
                     exec("php think menu -c forum/forum --force=true");
                     $output->writeln("<info>Admin-Menu Create Success!!!</info>");
                 }
             }
 
-            $question = new ConfirmationQuestion("[5.是否自动生成前台api], <fg=yellow>(y/n)</fg=yellow>)???", true, '/^(y|yes)/i');
+            $question = new ConfirmationQuestion("[5.create web-Api],<fg=yellow>(y/n)</fg=yellow>)???", true, '/^(y|yes)/i');
             if ($this->getHelperHandle()->ask($input, $output, $question)) {
                 //todo 复制文件
                 $fs = new Filesystem();
@@ -127,7 +127,7 @@
                                                            ));
             $table->render();
 
-            $question = new Question("[1.连接数据库]，例如(<fg=green>mysql -h127.0.0.1 -uroot -p123456 -P3306</fg=green>):");
+            $question = new Question("[1.connect database]，example(<fg=green>mysql -h127.0.0.1 -uroot -p123456 -P3306</fg=green>):");
             $question->setValidator(function($value) use ($output) {
                 if (trim($value) == '') {
                     throw new \Exception('数据库连接不能为空！');
@@ -153,7 +153,7 @@
             $this->databaseInfo['user']     = $database[1];
             $this->databaseInfo['password'] = $database[2];
             $this->databaseInfo['port']     = $database[3];
-            $question                       = new Question("[2.选择数据库]，例如(<fg=green>mysql -d`DatabaseName` -pre`TablePrefix`</fg=green>),例如(<fg=green>mysql -dceshi -prefa_</fg=green>):");
+            $question                       = new Question("[2.choose database]，example(<fg=green>mysql -d`DatabaseName` -pre`TablePrefix`</fg=green>),(<fg=green>mysql -dceshi -prefa_</fg=green>):");
             $question->setValidator(function($value) use ($output) {
                 if (trim($value) == '') {
                     throw new \Exception('选择数据库不能为空！');
