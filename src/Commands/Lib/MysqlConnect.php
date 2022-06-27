@@ -59,7 +59,7 @@
 
             $mysql = $handle->ask($input, $output, $question);
             $question->setMaxAttempts(3);
-            $question = new Question("[2.choose database]，example(<fg=green>mysql -d`DatabaseName` -pre`TablePrefix`</fg=green>),(<fg=green>mysql -dceshi -prefa_</fg=green>):");
+            $question = new Question("[2.choose database]，example(<fg=green>mysql -d`DatabaseName` -pre`TablePrefix`</fg=green>),(<fg=green> mysql -dceshi -prefa_ </fg=green>):");
             $question->setValidator(function($value) use ($output) {
                 if (trim($value) == '') {
                     throw new \Exception('选择数据库不能为空！');

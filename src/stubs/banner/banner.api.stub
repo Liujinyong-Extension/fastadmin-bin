@@ -1,0 +1,96 @@
+<?php
+
+    namespace app\api\controller\bindex;
+
+    use app\common\controller\Api;
+    use think\Request;
+    use think\Validate;
+
+    /**
+     * 轮播图
+     */
+    class Banner extends Api
+    {
+        protected $model;
+        protected $param;
+        protected $noNeedRight = ["*"];
+
+        public function __construct(Request $request = null)
+        {
+            parent::__construct($request);
+            $this->model = new {{bannerModel}}();
+            $this->param = $this->request->param();
+        }
+
+        /**
+         * 轮播图列表
+         *
+         * @ApiTitle    (轮播图列表)
+         * @ApiSummary  (轮播图列表)
+         * @ApiMethod   (POST)
+         * @ApiRoute    (/api/bindex/banner/getList)
+         * @ApiHeaders  (name=token, type=string, required=true, description="请求的Token")
+         * @ApiParams   (name="page", type="integer", required=true, description="页码")
+         * @ApiParams   (name="rows", type="integer", required=true, description="条数")
+         * @ApiReturnParams   (name="code", type="integer", required=true, sample="1")
+         * @ApiReturnParams   (name="msg", type="string", required=true, sample="返回成功")
+         * @ApiReturnParams   (name="data", type="array",  description="扩展数据返回")
+         * @ApiReturn   ({
+        "code": 1,
+        "msg": "成功",
+        "time": "1655101720",
+        "data": {
+        "total": 2,
+        "per_page": "10",
+        "current_page": 1,
+        "last_page": 1,
+        "data": [
+        {
+        "id": 3,
+        "image": "http://bronet.cn:85/uploads/20220613/85d774aaad11693dd849178627d0c11e.jpeg",
+        "url": "www.baidu.com",
+        "weight": 2,
+        "create_time": 1655098050,
+        "update_time": 1655098050,
+        "delete_time": null,
+        "create_time_text": "2022-06-13 13:27:30",
+        "update_time_text": "2022-06-13 13:27:30",
+        "delete_time_text": ""
+        },
+        {
+        "id": 2,
+        "image": "http://bronet.cn:85/uploads/20220610/8b35e21a98f89b0c19e4b94eb19533c8.png",
+        "url": "www.taobao.com/",
+        "weight": 0,
+        "create_time": 1654851548,
+        "update_time": 1654853066,
+        "delete_time": null,
+        "create_time_text": "2022-06-10 16:59:08",
+        "update_time_text": "2022-06-10 17:24:26",
+        "delete_time_text": ""
+        }
+        ]
+        }
+        })
+         */
+        public function get_list()
+        {
+            $validate = new Validate();
+            $validate->rule([
+                                'page' => 'require|number',
+                                'rows' => 'require|number',
+                            ]);
+            $validate->message([
+                                   'page.require' => '页码必须',
+                                   'rows.require' => '条数必须',
+                                   'page.number'  => '页码格式错误',
+                                   'rows.number'  => '条数格式错误',
+                               ]);
+            if (!$validate->check($this->param)) {
+                return json(['code' => 1001, "msg" => $validate->getError()]);
+            }
+            $list = $this->model->order('weight', 'desc')->paginate($this->param['rows']);
+
+            return $this->success("成功", $list);
+        }
+    }
