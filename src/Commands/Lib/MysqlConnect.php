@@ -32,8 +32,7 @@
             $table->setHeaders(array('步骤', '事项'))->setRows(array(
                                                                array('[1.连接数据库]', '创建orm实例'),
                                                                array('[2.选择数据库]', '选择数据库及设置表前缀'),
-                                                               array('[3.生成fastadmin控制器及目录]', '请填写路径'),
-                                                               array('[4.生成fastadmin前台api]', '请填写路径'),
+                                                               array('[3.fastadmin控制器,目录及API操作]', '请填写路径'),
                                                            ));
             $table->render();
             $question = new Question("[1.connect database]，example(<fg=green> mysql -h127.0.0.1 -uroot -p123456 -P3306 </fg=green>):");

@@ -9,6 +9,7 @@
 
     namespace Liujinyong\FastadminBin\Commands;
 
+    use Liujinyong\FastadminBin\Commands\Lib\MysqlConnect;
     use Symfony\Component\Console\Command\Command;
     use Symfony\Component\Console\Input\InputArgument;
     use Symfony\Component\Console\Input\InputInterface;
@@ -34,22 +35,22 @@
             $handler  = $this->getHelper("question");
             $this->fs = new Filesystem();
 
-            //$mysqlInstance = MysqlConnect::Instance($input,$output,$handler);
-            //
-            //
-            //if ( $mysqlInstance::getSchema()->hasTable("banner")) {
-            //    $mysqlInstance::getSchema()->drop("banner");
-            //}
-            //$mysqlInstance::getSchema()->create("banner", function($table) {
-            //    $table->increments('id')->comment("主键ID");
-            //    $table->text('image')->comment("图片地址");
-            //    $table->text('url')->nullable()->comment("链接");
-            //    $table->integer('weight')->default(0)->comment("权重");
-            //    $table->integer('create_time')->nullable()->comment("创建时间");
-            //    $table->integer('update_time')->nullable()->comment("更新时间");
-            //    $table->integer('delete_time')->nullable()->comment("删除时间");
-            //});
-            //$output->writeln("<info>Table Create success!!!</info>");
+            $mysqlInstance = MysqlConnect::Instance($input, $output, $handler);
+
+
+            if ($mysqlInstance::getSchema()->hasTable("banner")) {
+                $mysqlInstance::getSchema()->drop("banner");
+            }
+            $mysqlInstance::getSchema()->create("banner", function($table) {
+                $table->increments('id')->comment("主键ID");
+                $table->text('image')->comment("图片地址");
+                $table->text('url')->nullable()->comment("链接");
+                $table->integer('weight')->default(0)->comment("权重");
+                $table->integer('create_time')->nullable()->comment("创建时间");
+                $table->integer('update_time')->nullable()->comment("更新时间");
+                $table->integer('delete_time')->nullable()->comment("删除时间");
+            });
+            $output->writeln("<info>Table Create success!!!</info>");
 
             $question = new Question("[3.create admin-controller&menu],example(<fg=green>controller/menu</fg=green>),(<fg=green>test/demo</fg=green>):");
             $question->setValidator(function($value) {
@@ -104,7 +105,7 @@
 
                 return 1;
             }
-            $output->writeln("<info>Admin-Controller&Menu Create Success!!!</info>");
+            $output->writeln("<info>Admin-Controller&Menu&API Create Success!!!</info>");
 
             //if (!$this->fs->exists($apiPath)){
 
@@ -136,7 +137,6 @@
             exec("php think api --force=true");
             $output->writeln("<info>Admin-Api Create Success!!!</info>");
 
-            //}
             return 1;
         }
     }

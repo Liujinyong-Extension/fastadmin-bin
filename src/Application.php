@@ -11,6 +11,7 @@
 
     use Liujinyong\FastadminBin\Commands\CreateBanner;
     use Liujinyong\FastadminBin\Commands\CreateForum;
+    use Liujinyong\FastadminBin\Commands\DeleteBanner;
     use Liujinyong\FastadminBin\Commands\Test;
     use Symfony\Component\Console\Application as Base;
 
@@ -26,7 +27,7 @@
         {
             parent::__construct();
             $this->add(new CreateForum());
-            $this->add(new Test());
             $this->add(new CreateBanner());
+            $this->add(new DeleteBanner());
         }
     }
