@@ -1,6 +1,6 @@
 <?php
 
-    namespace app\api\controller\bindex;
+    namespace {{namespace}}
 
     use app\common\controller\Api;
     use think\Request;
@@ -9,7 +9,7 @@
     /**
      * 轮播图
      */
-    class Banner extends Api
+    class {{class}} extends Api
     {
         protected $model;
         protected $param;
@@ -28,7 +28,7 @@
          * @ApiTitle    (轮播图列表)
          * @ApiSummary  (轮播图列表)
          * @ApiMethod   (POST)
-         * @ApiRoute    (/api/bindex/banner/getList)
+         * @ApiRoute    (/api/{{apiModel}}/get_list)
          * @ApiHeaders  (name=token, type=string, required=true, description="请求的Token")
          * @ApiParams   (name="page", type="integer", required=true, description="页码")
          * @ApiParams   (name="rows", type="integer", required=true, description="条数")

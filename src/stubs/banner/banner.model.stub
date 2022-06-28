@@ -5,7 +5,7 @@ namespace {{namespace}}
 use think\Model;
 
 
-class Banner extends Model
+class {{class}} extends Model
 {
 
 

@@ -105,6 +105,7 @@
             if ($mysqlInstance::getSchema()->hasTable("banner")) {
                 $mysqlInstance::getSchema()->drop("banner");
                 $output->writeln("<info>Table Drop success!!!</info>");
+                $output->writeln("<info>别忘记清理数据库权限哦~~~</info>");
             }
             return 1;
 
