@@ -68,18 +68,21 @@
             exec($execC);
             exec($execM);
             //复制修改后的文件到指定的位置 model
-            if ($this->fs->exists( $fileModel = 'application/admin/model/' . $controllerMenu . '.php')) {
+            if ($this->fs->exists($fileModel = 'application/admin/model/' . $controllerMenu . '.php')) {
 
                 $namespace = "app\\admin\\model;";
-                $class = ucfirst($controllerMenu);
+                $class     = ucfirst($controllerMenu);
                 if (strpos($controllerMenu, '/')) {
 
                     $namespace = "app\\admin\\model\\" . explode('/', $controllerMenu)[0] . ";";
-                    $class = ucfirst(explode('/', $controllerMenu)[1]);
+                    $class     = ucfirst(explode('/', $controllerMenu)[1]);
 
                 }
 
-                $content = str_replace(["{{namespace}}","{{class}}"], [$namespace,$class], file_get_contents(__DIR__ . '/../stubs/banner/banner.model.stub'));
+                $content = str_replace(["{{namespace}}", "{{class}}"], [
+                    $namespace,
+                    $class
+                ],                     file_get_contents(__DIR__ . '/../stubs/banner/banner.model.stub'));
 
                 $this->fs->dumpFile($fileModel, $content);
             } else {
@@ -113,11 +116,9 @@
             }
             $output->writeln("<info>Admin-Controller&Menu&API Create Success!!!</info>");
 
-            //if (!$this->fs->exists($apiPath)){
-
             $arr = [
                 "app\\api\\controller;",
-                "\\app\\admin\\model\\".ucfirst($controllerMenu),
+                "\\app\\admin\\model\\" . ucfirst($controllerMenu),
                 $controllerMenu,
                 ucfirst($controllerMenu)
             ];

@@ -12,7 +12,8 @@ $ composer global require liujinyong/fastadmin-bin
 ## Usage
 
 ```shell
-$ fastadmin-bin forum:create    //创建论坛
+$ fastadmin-bin banner:create    //创建轮播图
+$ fastadmin-bin banner:delete    //删除轮播图
 ```
 
 ## Contributing
